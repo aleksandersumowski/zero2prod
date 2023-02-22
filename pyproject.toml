@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "zero2pr"
+version = "0.1.0"
+description = ""
+authors = ["Aleksander Sumowski <zero2pr@88442200.xyz>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+dagger-io = "^0.3.2"
+anyio = "^3.6.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -2,6 +2,7 @@ import sys
 
 import anyio
 import dagger
+import random
 
 
 async def main():
@@ -9,9 +10,7 @@ async def main():
 
     async with dagger.Connection(config) as client:
         source = (
-            client.container().
-            from_("rust:1.67.1-alpine").
-            with_exec(["cargo", "--version"]).
+            client.container().from_("rust:1.67.1").
             with_mounted_directory(
                 "/src",
                 client.host().directory(".", exclude=["ci"])
@@ -20,14 +19,18 @@ async def main():
         )
 
         test = source.with_workdir("/src").with_exec(["cargo", "test"])
-        build_dir = await (
-            test.with_exec(["cargo", "build"])
-            .directory("./target")
-            .export("./target")
+        cmd = ["cargo",
+               "install",
+               "--path", "."]
+        build_dir = test.with_exec(cmd).directory("./target")
+        image_ref = await (
+            client.container()
+            .from_("debian:bullseye-slim")
+            .with_directory("/opt/", build_dir)
+            .publish(f"ttl.sh/hello-dagger-{random.randint(0, 10000000)}")
         )
-        await build_dir.export("./target")
-        e = await build_dir.entries()
-        print(e)
+
+        print(f"Published image to: {image_ref}")
 
 
 anyio.run(main)

@@ -10,8 +10,8 @@ async def main():
 
     async with dagger.Connection(config) as client:
         source = (
-            client.container().from_("rust:1.67.1").
-            with_mounted_directory(
+            client.container().from_("rust:1.67.1-slim")
+            .with_mounted_directory(
                 "/src",
                 client.host().directory(".", exclude=["ci"])
             )
@@ -25,7 +25,7 @@ async def main():
         build_dir = test.with_exec(cmd).directory("./target")
         image_ref = await (
             client.container()
-            .from_("debian:bullseye-slim")
+            .from_("debian:11-slim")
             .with_directory("/opt/", build_dir)
             .publish(f"ttl.sh/hello-dagger-{random.randint(0, 10000000)}")
         )

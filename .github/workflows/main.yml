@@ -1,5 +1,6 @@
 name: 'ci'
-
+env:
+  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 on:
   push:
     branches:
@@ -21,3 +22,10 @@ jobs:
       - 
         name: Run dagger
         run: python ci/main.py
+  deployment:
+    runs-on: ubuntu-latest
+    environment: test
+    steps:
+      - uses: actions/checkout@v3
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: flyctl deploy --remote-only

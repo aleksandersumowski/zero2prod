@@ -16,5 +16,5 @@ RUN cargo install --path .
 FROM debian:11-slim
 COPY --from=build /usr/local/cargo/bin/zero2pr .
 USER 1000
-EXPOSE 8000
+EXPOSE 8080
 CMD ["./zero2pr"]

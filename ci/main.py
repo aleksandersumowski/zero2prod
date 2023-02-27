@@ -17,7 +17,7 @@ async def main():
         image_ref = (
             await client.container()
             .build(context_dir)
-            .publish(f"ttl.sh/hello-dagger-{random.randint(0, 10000000)}")
+            .publish("ttl.sh/zero2prod:latest")
         )
 
     print(f"Published image to: {image_ref}")
